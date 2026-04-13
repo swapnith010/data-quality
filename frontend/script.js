@@ -149,11 +149,17 @@ function downloadReport(){
         },
         body: JSON.stringify(lastResult)
     })
-    .then(response => {
-        if (!response.ok) throw new Error("Network error");
-        return response.blob();   // ✅ FIX
+    .then(async (response) => {
+        if (!response.ok) {
+            const text = await response.text();
+            console.error("Server error:", text);
+            throw new Error("Server error");
+        }
+        return response.blob();
     })
     .then(blob => {
+        if (blob.size === 0) throw new Error("Empty PDF");
+
         const url = window.URL.createObjectURL(blob);
 
         const a = document.createElement("a");
@@ -167,7 +173,8 @@ function downloadReport(){
 
         showToast("Downloaded successfully");
     })
-    .catch(() => {
+    .catch((err) => {
+        console.error(err);
         showToast("Download failed", "error");
     })
     .finally(() => hideLoader());
