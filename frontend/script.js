@@ -134,3 +134,28 @@ function upload(){
 }
 
 // DOWNLOAD
+function downloadReport(){
+    if(!lastResult){
+        showToast("No data to download","error");
+        return;
+    }
+
+    fetch(API + "/download-report", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(lastResult)
+    })
+    .then(res => res.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "data_quality_report.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    })
+    .catch(() => showToast("Download failed","error"));
+}

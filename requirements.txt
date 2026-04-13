@@ -1,4 +1,5 @@
 flask
-flask_sqlalchemy
-flask_cors
+flask-cors
+flask-sqlalchemy
 pandas
+reportlab
